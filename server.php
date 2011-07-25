@@ -33,7 +33,7 @@ class JsonrpcException extends Exception
 
 /**
  * Invalid JSON was received by the server.
- * An error occurred on the serverrver while parsing the JSON text
+ * An error occurred on the server while parsing the JSON text
  */
 class JsonrpcParseError extends JsonrpcException
 {
