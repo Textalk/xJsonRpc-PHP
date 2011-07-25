@@ -35,7 +35,7 @@ class JsonrpcException extends Exception
  * Invalid JSON was received by the server.
  * An error occurred on the serverrver while parsing the JSON text
  */
-class ParseError extends JsonrpcException
+class JsonrpcParseError extends JsonrpcException
 {
     public function __construct()
     {
@@ -46,7 +46,7 @@ class ParseError extends JsonrpcException
 /**
  * The JSON sent is not a valid Request object
  */
-class InvalidRequestError extends JsonrpcException
+class JsonrpcInvalidRequestError extends JsonrpcException
 {
     public function __construct()
     {
@@ -57,7 +57,7 @@ class InvalidRequestError extends JsonrpcException
 /**
  * The JSON-RPC call is using an incompatible version
  */
-class InvalidVersionError extends JsonrpcException
+class JsonrpcInvalidVersionError extends JsonrpcException
 {
     public function __construct()
     {
@@ -68,7 +68,7 @@ class InvalidVersionError extends JsonrpcException
 /**
  * The method does not exist / is not available.
  */
-class MethodNotFoundError extends JsonrpcException
+class JsonrpcMethodNotFoundError extends JsonrpcException
 {
     public function __construct()
     {
@@ -79,7 +79,7 @@ class MethodNotFoundError extends JsonrpcException
 /**
  * Invalid method parameter(s).
  */
-class InvalidParamsError extends JsonrpcException
+class JsonrpcInvalidParamsError extends JsonrpcException
 {
     public function __construct()
     {
@@ -90,7 +90,7 @@ class InvalidParamsError extends JsonrpcException
 /**
  * Internal JSON-RPC error.
  */
-class InternalError extends JsonrpcException
+class JsonrpcInternalError extends JsonrpcException
 {
     public function __construct()
     {
