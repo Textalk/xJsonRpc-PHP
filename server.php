@@ -1,0 +1,103 @@
+<?php
+class JsonrpcException extends Exception
+{
+    protected $data;
+
+    public function __construct($code, $message, $data = NULL)
+    {
+        $this->data = $data;
+        parent::__construct($message, $code);
+    }
+
+    public function toJson()
+    {
+        $data = array(
+            "code" => $this->getCode(),
+            "message" => $this->getMessage()
+        );
+        if($this->data)
+            $data["data"] = $this->data;
+
+        return json_encode($data);
+    }
+}
+
+/**
+ * Invalid JSON was received by the server.
+ * An error occurred on the serverrver while parsing the JSON text
+ */
+class ParseError extends JsonrpcException
+{
+    public function __construct()
+    {
+        parent::__construct(-32700, "Parse error");
+    }
+}
+
+/**
+ * The JSON sent is not a valid Request object
+ */
+class InvalidRequestError extends JsonrpcException
+{
+    public function __construct()
+    {
+        parent::__construct(-32600, "Invalid request");
+    }
+}
+
+/**
+ * The JSON-RPC call is using an incompatible version
+ */
+class InvalidVersionError extends JsonrpcException
+{
+    public function __construct()
+    {
+        parent::__construct(0, "Incompatible version", array(expectedVersion => "2.0"));
+    }
+}
+
+/**
+ * The method does not exist / is not available.
+ */
+class MethodNotFoundError extends JsonrpcException
+{
+    public function __construct()
+    {
+        parent::__construct(-32601, "Method not found");
+    }
+}
+
+/**
+ * Invalid method parameter(s).
+ */
+class InvalidParamsError extends JsonrpcException
+{
+    public function __construct()
+    {
+        parent::__construct(-32602, "Invalid params");
+    }
+}
+
+/**
+ * Internal JSON-RPC error.
+ */
+class InternalError extends JsonrpcException
+{
+    public function __construct()
+    {
+        parent::__construct(-32603, "Internal error");
+    }
+}
+
+class ApplicationError extends JsonrpcException
+{
+}
+
+class Jsonrpc20Server
+{
+    public function handle()
+    {
+
+    }
+}
+?>
