@@ -18,7 +18,7 @@ class JsonrpcException extends Exception
         parent::__construct($message, $code);
     }
 
-    public function toJson()
+    public function getDict()
     {
         $data = array(
             "code" => $this->getCode(),
