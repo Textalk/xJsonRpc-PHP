@@ -52,7 +52,7 @@ _______
     $server = ExampleServer();
     $server->handle() 
 
-And then you can call the echo method with your preferred JSON-RPC client library by connecting to whatever url you have set-up that calls $server->handle()
+And then you can call the echo method with your preferred JSON-RPC client library by connecting to whatever url you have set-up that calls ``$server->handle()``
 
 Client
 ......
