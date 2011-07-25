@@ -37,7 +37,7 @@ To implement methods you subclass one of the above servers and add methods prepe
 Example
 _______
 
-.. code-block:: PHP
+::
 
     require_once('xjsonrpc-php/server.php');
     
