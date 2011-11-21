@@ -17,6 +17,30 @@ class Jsonrpc20WebClientNotify
     }
 }
 
+class Jsonrpc20BatchRequest
+{
+    protected $client;
+    protected $calls;
+    protected $result;
+
+    public function __construct(Jsonrpc20WebClient $client)
+    {
+        $this->client = $client;
+        $this->calls = array();
+    }
+
+    public function __call($method, $args)
+    {
+        $this->calls[] = $this->client->assemble_request($method, $args, count($this->calls));
+    }
+
+    public function __invoke()
+    {
+        $this->result = $this->client->send_request($this->calls);
+        return $this->result;
+    }
+}
+
 /**
  * @TODO Error handling
  */
@@ -37,23 +61,28 @@ class Jsonrpc20WebClient
         return $this->send_request($request);
     }
 
+    public function create_batch_request()
+    {
+        return new Jsonrpc20BatchRequest($this);
+    }
+
     public function notify($method, $args)
     {
-        $request = $this->assemble_request($method, $args, true);
+        $request = $this->assemble_request($method, $args, null, true);
         return $this->json_encode($request);
     }
 
-    protected function assemble_request($method, $args, $notification = false)
+    public function assemble_request($method, $args, $reqid = 1, $notification = false)
     {
         return array(
             'method'  => $method,
             'params'  => $args,
-            'id'      => $notification ? null : 1,
+            'id'      => $notification ? null : $reqid,
             'jsonrpc' => '2.0'
         );
     }
 
-    protected function send_request(array $request)
+    public function send_request(array $request)
     {
         $request_json = $this->_encode_json($request);
 
@@ -113,7 +142,7 @@ class Jsonrpc20WebClient
         return $results;
     }
 
-    protected function _handle_response ($response)
+    protected function _handle_response($response)
     {
         try
         {
@@ -166,7 +195,7 @@ class Jsonrpc20WebClient
             }
         }
 
-
+        return $response['result'];
     }
 
     protected function _validate_response($response)

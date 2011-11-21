@@ -23,7 +23,6 @@ class Jsonrpc20Server
         {
             return $this->_create_error_response($e, NULL);
         }
-
         return $this->_delegate_request($request);
     }
 
