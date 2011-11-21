@@ -18,7 +18,7 @@ class JsonrpcException extends Exception
         if($this->data)
             $data["data"] = $this->data;
 
-        return json_encode($data);
+        return $data;
     }
 }
 
@@ -52,7 +52,7 @@ class JsonrpcInvalidVersionError extends JsonrpcException
 {
     public function __construct()
     {
-        parent::__construct(0, "Incompatible version", array(expectedVersion => "2.0"));
+        parent::__construct(0, "Incompatible version", array('expectedVersion' => "2.0"));
     }
 }
 

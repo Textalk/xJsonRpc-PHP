@@ -59,7 +59,6 @@ class Jsonrpc20Server
             $response["error"] = $error->getDict();
         else
         {
-            print $error;
             $response["error"] = array(
                 "code" => 0,
                 "message" => $error->getMessage()
@@ -116,7 +115,7 @@ class Jsonrpc20Server
             throw new JsonrpcInvalidVersionError();
 
         if(!is_string($request["method"]))
-            throw new JsonrpcInvalidRequestError("Method is not string but " . gettype($request["method"]);
+            throw new JsonrpcInvalidRequestError("Method is not string but " . gettype($request["method"]));
 
         if(array_key_exists("params", $request) && !is_array($request["params"]))
             throw new JsonrpcInvalidRequestError("Params is not array but " . gettype($request["params"]));
