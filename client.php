@@ -62,36 +62,55 @@ class Jsonrpc20WebClient
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_POSTFIELDS, $request_json);
 
-        $result = curl_exec($curl);
+        $response = curl_exec($curl);
 
-        return $this->_delegate_response($result);
+        return $this->_parse($response);
+    }
+
+    protected function _parse($data)
+    {
+        $response = $this->_parse_json($data);
+        return $this->_delegate_response($response);
     }
 
     protected function _handle_success_response($response, $reqid)
     {
-        // ...
+        return array('result' => $response,
+                     'reqid'  => $reqid);
     }
 
-    protected function _handle_error_response($response, $reqid)
+    protected function _handle_error_response(Exception $error, $reqid)
     {
-        return $response;
+        return array('result' => $error,
+                     'reqid'  => $reqid);
     }
 
-    protected function _delegate_response($result)
+    protected function _delegate_response($response)
     {
-        if(is_assoc($result))
-            return $this->_handle_response($result);
+        if(is_assoc($response))
+        {
+            $result = $this->_handle_response($response);
+            $result = $result['result'];
+
+            if($result instanceof Exception)
+                throw $result;
+            else
+                return $result;
+        }
         else
-            return $this->_handle_batch_response($result);
+            return $this->_handle_batch_response($response);
     }
 
     protected function _handle_batch_response($responses)
     {
-        $result = array();
+        $results = array();
         foreach($responses as $response)
-            $result[] = $this->_hande_response($response);
+        {
+            $result = $this->_handle_response($response);
+            $results[$result['reqid']] = $result['result'];
+        }
 
-        return $result;
+        return $results;
     }
 
     protected function _handle_response ($response)
@@ -100,19 +119,54 @@ class Jsonrpc20WebClient
         {
             $this->_validate_response($response);
         }
-        catch(JsonrpcException $e)
+        catch(JsonrpcException $exception)
         {
-            return $this->_handle_error_response($e, NULL);
+            return $this->_handle_error_response($exception, NULL);
         }
 
         try
         {
-
+            $result = $this->_parse_response($response);
+            return $this->_handle_success_response($result, $response['id']);
         }
-        catch(JsonrpcException $e)
+        catch(JsonrpcException $exception)
         {
-
+            return $this->_handle_error_response($exception, $response['id']);
         }
+    }
+
+    protected function _parse_response($response)
+    {
+        if(array_key_exists('error', $response))
+        {
+            $error = $response['error'];
+            switch($error['code'])
+            {
+                case -32700:
+                    throw new JsonrpcParseError();
+                    break;
+                case -32600:
+                    throw new JsonrpcInvalidRequestError();
+                    break;
+                case -32601:
+                    throw new JsonrpcMethodNotFoundError();
+                    break;
+                case -32602:
+                    throw new JsonrpcInvalidParamsError();
+                    break;
+                case -32603:
+                    throw new JsonrpcInternalError();
+                    break;
+                case 0:
+                    throw new JsonrpcInvalidVersionError();
+                    break;
+                default:
+                    throw new JsonrpcApplicationError($error['code'], $error['message']);
+                    break;
+            }
+        }
+
+
     }
 
     protected function _validate_response($response)
