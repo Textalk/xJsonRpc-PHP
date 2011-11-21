@@ -109,33 +109,20 @@ class Jsonrpc20Server
 
     protected function _validate_request($request)
     {
-        if(!array_key_exists("method", $request)
-            || !array_key_exists("id", $request))
-        {
-            print "InvalidRequest: Missing method and/or id";
-            throw new JsonrpcInvalidRequestError();
-        }
+        if(!array_key_exists("method", $request) || !array_key_exists("id", $request))
+            throw new JsonrpcInvalidRequestError("Missing method and/or id");
 
         if(!array_key_exists("jsonrpc", $request) || $request["jsonrpc"] != "2.0")
             throw new JsonrpcInvalidVersionError();
 
         if(!is_string($request["method"]))
-        {
-            print "InvalidRequest: Method is not string but " . gettype($request["method"]);
-            throw new JsonrpcInvalidRequestError();
-        }
+            throw new JsonrpcInvalidRequestError("Method is not string but " . gettype($request["method"]);
 
         if(array_key_exists("params", $request) && !is_array($request["params"]))
-        {
-            print "InvalidRequest: Params is not array but " . gettype($request["params"]);
-            throw new JsonrpcInvalidRequestError();
-        }
+            throw new JsonrpcInvalidRequestError("Params is not array but " . gettype($request["params"]));
 
-        if(!is_numeric($request["id"]) && !is_string($request["id"]))
-        {
-            print "InvalidRequest: id isn't string or int but " . gettype($request["id"]);
-            throw new JsonrpcInvalidRequestError();
-        }
+        if(!is_numeric($request["id"]) && !is_string($request["id"] && !is_null($request["id"])))
+            throw new JsonrpcInvalidRequestError("id isn't string, int or NULL but " . gettype($request["id"]));
 
         return true;
     }
@@ -158,7 +145,6 @@ class Jsonrpc20Server
         return $result;
     }
 }
-
 
 class StdinJsonrpc20Server extends Jsonrpc20Server
 {
