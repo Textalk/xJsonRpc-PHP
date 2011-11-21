@@ -1,4 +1,7 @@
 <?php
+require_once("exceptions.php");
+require_once("helpers.php");
+
 class Jsonrpc20WebClientNotify
 {
     protected $parent;
