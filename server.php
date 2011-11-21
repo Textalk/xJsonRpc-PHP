@@ -102,6 +102,9 @@ class JsonrpcApplicationError extends JsonrpcException
 {
 }
 
+/**
+ * @TODO Handle incorrect amount of arguments (Well lack of arguments)
+ */
 class Jsonrpc20Server
 {
     public function handle($data)
