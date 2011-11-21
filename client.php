@@ -14,6 +14,9 @@ class Jsonrpc20WebClientNotify
     }
 }
 
+/**
+ * @TODO Error handling
+ */
 class Jsonrpc20WebClient
 {
     protected $endpoint;
