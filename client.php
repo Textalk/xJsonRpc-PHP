@@ -31,7 +31,10 @@ class Jsonrpc20BatchRequest
 
     public function __call($method, $args)
     {
-        $this->calls[] = $this->client->assemble_request($method, $args, count($this->calls));
+        $reqid = count($this->calls);
+        $this->calls[] = $this->client->assemble_request($method, $args, $reqid);
+
+        return $reqid;
     }
 
     public function __invoke()
