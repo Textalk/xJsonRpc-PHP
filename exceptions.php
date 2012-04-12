@@ -35,6 +35,29 @@ class JsonrpcParseError extends JsonrpcException
 }
 
 /**
+ * Invalid JSON was received FROM the server.
+ */
+class JsonrpcParseResponseError extends JsonrpcException
+{
+    private $response;
+
+    public function __construct($response)
+    {
+        parent::__construct(0, "Response parse error");
+        $this->response = $response;
+    }
+
+    /**
+     * To debug what couldn't be parsed.
+     * @return The response that couldn't be parsed
+     */
+    public function getResponse()
+    {
+        return $this->response;
+    }
+}
+
+/**
  * The JSON sent is not a valid Request object
  */
 class JsonrpcInvalidRequestError extends JsonrpcException

@@ -229,7 +229,7 @@ class Jsonrpc20WebClient
     {
         $result = json_decode($json, true);
         if($result === NULL)
-            throw new JsonrpcParseError();
+            throw new JsonrpcParseResponseError($json);
 
         return $result;
     }
