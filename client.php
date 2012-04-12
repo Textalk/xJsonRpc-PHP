@@ -190,7 +190,7 @@ class Jsonrpc20WebClient
                     throw new JsonrpcInternalError();
                     break;
                 case 0:
-                    throw new JsonrpcInvalidVersionError();
+                    //throw new JsonrpcInvalidVersionError();
                     break;
                 default:
                     throw new JsonrpcApplicationError($error['code'], $error['message']);
@@ -206,8 +206,8 @@ class Jsonrpc20WebClient
         if(!array_key_exists("id", $response))
             throw new JsonrpcInvalidRequestError("Missing id");
 
-        if(!array_key_exists("jsonrpc", $response) || $response["jsonrpc"] != "2.0")
-            throw new JsonrpcInvalidVersionError();
+        //if(!array_key_exists("jsonrpc", $response) || $response["jsonrpc"] != "2.0")
+        //    throw new JsonrpcInvalidVersionError();
 
         if(!array_key_exists('result', $response) && !array_key_exists('error', $response))
             throw new JsonrpcInvalidRequestError("No error or result in response");
