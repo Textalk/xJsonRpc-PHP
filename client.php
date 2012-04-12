@@ -50,6 +50,7 @@ class Jsonrpc20BatchRequest
 class Jsonrpc20WebClient
 {
     protected $endpoint;
+    protected $debug = false;
     public $notify;
 
     public function __construct($endpoint)
@@ -94,9 +95,15 @@ class Jsonrpc20WebClient
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_POSTFIELDS, $request_json);
 
+        if ($this->debug) trigger_error("Jsonrpc20WebClient sending request: $request_json");
         $response = curl_exec($curl);
 
         return $this->_parse($response);
+    }
+
+    public function set_debug($debug = true)
+    {
+        $this->debug = $debug;
     }
 
     protected function _parse($data)
