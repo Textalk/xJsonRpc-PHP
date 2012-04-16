@@ -2,6 +2,7 @@
 class JsonrpcException extends Exception
 {
     protected $data;
+    protected $http_status = 200;
 
     public function __construct($code, $message, $data = NULL)
     {
@@ -20,6 +21,10 @@ class JsonrpcException extends Exception
 
         return $data;
     }
+
+    public function getHttpStatus() {
+      return $this->http_status;
+    }
 }
 
 /**
@@ -31,6 +36,7 @@ class JsonrpcParseError extends JsonrpcException
     public function __construct()
     {
         parent::__construct(-32700, "Parse error");
+        $this->http_status = 500;
     }
 }
 
@@ -65,6 +71,7 @@ class JsonrpcInvalidRequestError extends JsonrpcException
     public function __construct($message)
     {
         parent::__construct(-32600, "Invalid request: " . $message);
+        $this->http_status = 400;
     }
 }
 
@@ -76,6 +83,7 @@ class JsonrpcInvalidVersionError extends JsonrpcException
     public function __construct()
     {
         parent::__construct(0, "Incompatible version", array('expectedVersion' => "2.0"));
+        $this->http_status = 500;
     }
 }
 
@@ -87,6 +95,7 @@ class JsonrpcMethodNotFoundError extends JsonrpcException
     public function __construct()
     {
         parent::__construct(-32601, "Method not found");
+        $this->http_status = 404;
     }
 }
 
@@ -98,6 +107,7 @@ class JsonrpcInvalidParamsError extends JsonrpcException
     public function __construct()
     {
         parent::__construct(-32602, "Invalid params");
+        $this->http_status = 500;
     }
 }
 
@@ -109,6 +119,7 @@ class JsonrpcInternalError extends JsonrpcException
     public function __construct()
     {
         parent::__construct(-32603, "Internal error");
+        $this->http_status = 500;
     }
 }
 
