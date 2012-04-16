@@ -157,6 +157,7 @@ class WebJsonrpc20Server extends Jsonrpc20Server
 {
     public function handle()
     {
+        header('Content-type: application/json-rpc');
         $data = file_get_contents('php://input');
         return parent::handle($data);
     }
