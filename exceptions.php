@@ -92,9 +92,10 @@ class JsonrpcInvalidVersionError extends JsonrpcException
  */
 class JsonrpcMethodNotFoundError extends JsonrpcException
 {
-    public function __construct()
+    public function __construct($method = null)
     {
-        parent::__construct(-32601, "Method not found");
+        if (empty($method)) parent::__construct(-32601, "Method not found");
+        else parent::__construct(-32601, "Method not found: $method");
         $this->http_status = 404;
     }
 }
