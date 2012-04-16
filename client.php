@@ -219,7 +219,7 @@ class Jsonrpc20WebClient
         if(!array_key_exists('result', $response) && !array_key_exists('error', $response))
             throw new JsonrpcInvalidRequestError("No error or result in response");
 
-        if(!is_numeric($response["id"]) && !is_string($response["id"]))
+        if(!is_numeric($response["id"]) && !is_string($response["id"]) && !is_null($response['id']))
             throw new JsonrpcInvalidRequestError("id isn't string or int but " . gettype($request["id"]));
 
         return true;
