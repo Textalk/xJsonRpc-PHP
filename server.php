@@ -132,7 +132,7 @@ class Jsonrpc20Server
         $params = array_key_exists("params", $request) ? $request["params"] : NULL;
 
         $methodName = "jsonrpc20_" . $method;
-        if(!method_exists($this, $methodName))
+        if(!is_callable(array($this, $methodName)))
             throw new JsonrpcMethodNotFoundError();
 
         if(is_assoc($params))
