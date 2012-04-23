@@ -49,14 +49,20 @@ class Jsonrpc20BatchRequest
  */
 class Jsonrpc20WebClient
 {
+    // Bitfield flags to constructor
+    const NO_VERIFY_SSL = 1;
+
     protected $endpoint;
     protected $debug = false;
+    protected $verify_ssl = true;
     public $notify;
 
-    public function __construct($endpoint)
+    public function __construct($endpoint, $flags = 0)
     {
         $this->endpoint = $endpoint;
         $this->notify = new Jsonrpc20WebClientNotify($this);
+
+        if ($this->flags & self::NO_VERIFY_SSL) $this->verify_ssl = false;
     }
 
     public function __call($method, $args)
@@ -94,6 +100,8 @@ class Jsonrpc20WebClient
 
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_POSTFIELDS, $request_json);
+
+        if ($this->verify_ssl === false) curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 
         if ($this->debug) trigger_error("Jsonrpc20WebClient sending request: $request_json");
         $response = curl_exec($curl);
