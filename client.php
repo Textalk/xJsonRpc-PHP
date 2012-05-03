@@ -62,7 +62,7 @@ class Jsonrpc20WebClient
         $this->endpoint = $endpoint;
         $this->notify = new Jsonrpc20WebClientNotify($this);
 
-        if ($this->flags & self::NO_VERIFY_SSL) $this->verify_ssl = false;
+        if ($flags & self::NO_VERIFY_SSL) $this->verify_ssl = false;
     }
 
     public function __call($method, $args)
