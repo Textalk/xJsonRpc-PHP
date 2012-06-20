@@ -2,7 +2,7 @@
 class JsonrpcException extends Exception
 {
     protected $data;
-    protected $http_status = 200;
+    protected $http_status = 500;
 
     public function __construct($code, $message, $data = NULL)
     {
