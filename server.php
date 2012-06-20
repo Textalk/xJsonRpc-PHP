@@ -135,7 +135,7 @@ class Jsonrpc20Server
         if(!is_callable(array($this, $methodName)))
             throw new JsonrpcMethodNotFoundError();
 
-        if(is_assoc($params))
+        if(!empty($params) && is_assoc($params))
             $result = $this->$methodName($params);
         else
             $result = call_user_func_array(array($this, $methodName), $params);
