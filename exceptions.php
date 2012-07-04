@@ -1,8 +1,14 @@
 <?php
 class JsonrpcException extends Exception
 {
+    const
+        PARSE_ERROR = -32700,
+        INVALID_REQUEST = -32600,
+        METHOD_NOT_FOUND = -32601,
+        INVALID_PARAMS = -32602,
+        INTERNAL_ERROR = -32603;
+
     protected $data;
-    protected $http_status = 500;
 
     public function __construct($code, $message, $data = NULL)
     {
@@ -21,10 +27,6 @@ class JsonrpcException extends Exception
 
         return $data;
     }
-
-    public function getHttpStatus() {
-      return $this->http_status;
-    }
 }
 
 /**
@@ -35,8 +37,7 @@ class JsonrpcParseError extends JsonrpcException
 {
     public function __construct()
     {
-        parent::__construct(-32700, "Parse error");
-        $this->http_status = 500;
+        parent::__construct(self::PARSE_ERROR, "Parse error");
     }
 }
 
@@ -70,8 +71,7 @@ class JsonrpcInvalidRequestError extends JsonrpcException
 {
     public function __construct($message)
     {
-        parent::__construct(-32600, "Invalid request: " . $message);
-        $this->http_status = 400;
+        parent::__construct(self::INVALID_REQUEST, "Invalid request: " . $message);
     }
 }
 
@@ -83,7 +83,6 @@ class JsonrpcInvalidVersionError extends JsonrpcException
     public function __construct()
     {
         parent::__construct(0, "Incompatible version", array('expectedVersion' => "2.0"));
-        $this->http_status = 500;
     }
 }
 
@@ -94,9 +93,8 @@ class JsonrpcMethodNotFoundError extends JsonrpcException
 {
     public function __construct($method = null)
     {
-        if (empty($method)) parent::__construct(-32601, "Method not found");
-        else parent::__construct(-32601, "Method not found: $method");
-        $this->http_status = 404;
+        if (empty($method)) parent::__construct(self::METHOD_NOT_FOUND, "Method not found");
+        else parent::__construct(self::METHOD_NOT_FOUND, "Method not found: $method");
     }
 }
 
@@ -107,8 +105,7 @@ class JsonrpcInvalidParamsError extends JsonrpcException
 {
     public function __construct()
     {
-        parent::__construct(-32602, "Invalid params");
-        $this->http_status = 500;
+        parent::__construct(self::INVALID_PARAMS, "Invalid params");
     }
 }
 
@@ -119,8 +116,7 @@ class JsonrpcInternalError extends JsonrpcException
 {
     public function __construct()
     {
-        parent::__construct(-32603, "Internal error");
-        $this->http_status = 500;
+        parent::__construct(self::INTERNAL_ERROR, "Internal error");
     }
 }
 
