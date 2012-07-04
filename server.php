@@ -78,7 +78,12 @@ class Jsonrpc20Server
     {
         $result = array();
         foreach($requests as $request)
-            $result[] = $this->_parse_request($request);
+        {
+            $request_result = $this->_parse_request($request);
+
+            // Don't collect notification responses
+            if ($request_result !== null) $result[] = $request_result;
+        }
 
         return $result;
     }
@@ -97,18 +102,21 @@ class Jsonrpc20Server
         try
         {
             $result = $this->_run_request($request);
-            return $this->_create_success_response($result, $request["id"]);
+            if (isset($request['id']))
+                return $this->_create_success_response($result, $request["id"]);
+            else return null; // No return data for notification requests
         }
         catch(JsonrpcException $e)
         {
+            if (!isset($request['id'])) return null; // No return data for notification requests
             return $this->_create_error_response($e, $request["id"]);
         }
     }
 
     protected function _validate_request($request)
     {
-        if(!array_key_exists("method", $request) || !array_key_exists("id", $request))
-            throw new JsonrpcInvalidRequestError("Missing method and/or id");
+        if(!array_key_exists("method", $request))
+            throw new JsonrpcInvalidRequestError("Missing method");
 
         if(!array_key_exists("jsonrpc", $request) || $request["jsonrpc"] != "2.0")
             throw new JsonrpcInvalidVersionError();
@@ -119,7 +127,8 @@ class Jsonrpc20Server
         if(array_key_exists("params", $request) && !is_array($request["params"]))
             throw new JsonrpcInvalidRequestError("Params is not array but " . gettype($request["params"]));
 
-        if(!is_numeric($request["id"]) && !is_string($request["id"] && !is_null($request["id"])))
+        if(isset($request['id']) && !is_numeric($request["id"]) && !is_string($request["id"])
+           && !is_null($request["id"]))
             throw new JsonrpcInvalidRequestError("id isn't string, int or NULL but " . gettype($request["id"]));
 
         return true;
@@ -159,7 +168,29 @@ class WebJsonrpc20Server extends Jsonrpc20Server
     {
         header('Content-type: application/json-rpc');
         $data = file_get_contents('php://input');
-        return parent::handle($data);
+        $result = $this->_handle($data);
+
+        // Use 204 on notification requests, ignoring errors
+        if($result === null) header('HTTP/1.0 204');
+
+        // For non-batch calls, use response code according to json rpc over http
+        elseif(is_assoc($result))
+        {
+            $response_code = 200;
+
+            if(isset($result['error']))
+            {
+                switch($result['error']['code'])
+                {
+                    case -32600: $response_code = 400; break;
+                    case -32601: $response_code = 404; break;
+                    default:     $response_code = 500;
+                }
+            }
+            header('HTTP/1.0 ' . $response_code);
+        }
+
+        return $this->_encode_json($result);
     }
 }
 ?>
