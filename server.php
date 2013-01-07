@@ -155,7 +155,7 @@ class Jsonrpc20Server
 
 class StdinJsonrpc20Server extends Jsonrpc20Server
 {
-    public function handle()
+    public function handle($data)
     {
         $data = file_get_contents('php://stdin');
         return parent::handle($data);
@@ -164,7 +164,7 @@ class StdinJsonrpc20Server extends Jsonrpc20Server
 
 class WebJsonrpc20Server extends Jsonrpc20Server
 {
-    public function handle()
+    public function handle($data)
     {
         header('Content-type: application/json-rpc');
         $data = file_get_contents('php://input');
