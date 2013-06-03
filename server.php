@@ -138,7 +138,7 @@ class Jsonrpc20Server
     {
         $reqid = $request["id"];
         $method = $request["method"];
-        $params = array_key_exists("params", $request) ? $request["params"] : NULL;
+        $params = array_key_exists("params", $request) ? $request["params"] : array();
 
         $methodName = "jsonrpc20_" . $method;
         if(!is_callable(array($this, $methodName)))
