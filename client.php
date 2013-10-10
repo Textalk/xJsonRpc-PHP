@@ -208,7 +208,8 @@ class Jsonrpc20WebClient
                     //throw new JsonrpcInvalidVersionError();
                     break;
                 default:
-                    throw new JsonrpcApplicationError($error['code'], $error['message']);
+                    $data = array_key_exists('data', $error) ? $error['data'] : null;
+                    throw new JsonrpcApplicationError($error['code'], $error['message'], $data);
                     break;
             }
         }

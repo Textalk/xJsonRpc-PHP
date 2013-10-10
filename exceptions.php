@@ -27,6 +27,11 @@ class JsonrpcException extends Exception
 
         return $data;
     }
+
+    public function getData()
+    {
+        return $this->data;
+    }
 }
 
 /**
