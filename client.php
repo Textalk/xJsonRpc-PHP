@@ -193,7 +193,7 @@ class Jsonrpc20WebClient
                     throw new JsonrpcParseError();
                     break;
                 case -32600:
-                    throw new JsonrpcInvalidRequestError();
+                    throw new JsonrpcInvalidRequestError($error['message']);
                     break;
                 case -32601:
                     throw new JsonrpcMethodNotFoundError();
