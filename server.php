@@ -170,25 +170,7 @@ class WebJsonrpc20Server extends Jsonrpc20Server
         $data = file_get_contents('php://input');
         $result = $this->_handle($data);
 
-        // Use 204 on notification requests, ignoring errors
-        if($result === null) header('HTTP/1.0 204');
-
-        // For non-batch calls, use response code according to json rpc over http
-        elseif(is_assoc($result))
-        {
-            $response_code = 200;
-
-            if(isset($result['error']))
-            {
-                switch($result['error']['code'])
-                {
-                    case -32600: $response_code = 400; break;
-                    case -32601: $response_code = 404; break;
-                    default:     $response_code = 500;
-                }
-            }
-            header('HTTP/1.0 ' . $response_code);
-        }
+        header('HTTP/1.0 200'); // Signifying that the communication went well.
 
         return $this->_encode_json($result);
     }
