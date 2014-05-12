@@ -101,7 +101,10 @@ class Jsonrpc20WebClient
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_POSTFIELDS, $request_json);
 
-        if ($this->verify_ssl === false) curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        if ($this->verify_ssl === false) {
+          curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+          curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        }
 
         if ($this->debug) trigger_error("Jsonrpc20WebClient sending request: $request_json");
         $response = curl_exec($curl);
