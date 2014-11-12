@@ -108,9 +108,9 @@ class JsonrpcMethodNotFoundError extends JsonrpcException
  */
 class JsonrpcInvalidParamsError extends JsonrpcException
 {
-    public function __construct()
+    public function __construct($data = null)
     {
-        parent::__construct(self::INVALID_PARAMS, "Invalid params");
+        parent::__construct(self::INVALID_PARAMS, "Invalid params", $data);
     }
 }
 
