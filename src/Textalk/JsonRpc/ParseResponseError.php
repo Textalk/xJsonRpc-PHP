@@ -5,7 +5,7 @@ namespace Textalk\JsonRpc;
 /**
  * Invalid JSON was received FROM the server.
  */
-class ResponseError extends Exception
+class ParseResponseError extends Exception
 {
     private $response;
 
